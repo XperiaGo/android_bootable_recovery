@@ -39,6 +39,10 @@
 #define DEVID_MAX 64
 #define HWID_MAX 32
 
+#ifdef XPERIA_TWRP_TOUCH
+#include "xperia_nxt.h"
+#endif
+
 extern "C"
 {
 	#include "twcommon.h"
@@ -904,7 +908,12 @@ int DataManager::GetMagicValue(const string& varName, string& value)
 			capacity_file += "/capacity";
 			FILE * cap = fopen(capacity_file.c_str(),"rt");
 #else
+	#ifdef XPERIA_TWRP_TOUCH
+			string capacity_file = BATTERY_CAPACITY_FILE;
+			FILE * cap = fopen(capacity_file.c_str(),"rt");
+	#else
 			FILE * cap = fopen("/sys/class/power_supply/battery/capacity","rt");
+	#endif
 #endif
 			if (cap){
 				fgets(cap_s, 4, cap);
@@ -918,7 +927,12 @@ int DataManager::GetMagicValue(const string& varName, string& value)
 			status_file += "/status";
 			cap = fopen(status_file.c_str(),"rt");
 #else
+	#ifdef XPERIA_TWRP_TOUCH
+			string status_file = BATTERY_CHARGING_STATUS_FILE;
+			cap = fopen(status_file.c_str(),"rt");
+	#else
 			cap = fopen("/sys/class/power_supply/battery/status","rt");
+	#endif
 #endif
 			if (cap) {
 				fgets(cap_s, 2, cap);
